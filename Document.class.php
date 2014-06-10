@@ -1,7 +1,5 @@
 <?php
 
-namespace Document;
-
 class Document
 {
 	protected $words;
