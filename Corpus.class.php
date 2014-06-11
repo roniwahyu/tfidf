@@ -57,5 +57,5 @@ class Corpus
 	}
 }
 
-$corpus = new Corpus('ref_fr');
+$corpus = new Corpus('ref');
 $corpus->gettfidf();
