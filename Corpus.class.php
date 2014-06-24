@@ -24,6 +24,18 @@ class Corpus
 		$this->build_idf();
 	}
 
+	protected function extractHTML($adress)
+	{
+		$html_raw = file_get_contents($adress);
+		$dom = new domDocument;
+		@$dom->loadHTML($html_raw);
+		$dom->preserveWhiteSpace = false;
+		$tables = $dom->getElementsByTagName('p');
+		foreach ($tables as $table)
+			$string_out = $string_out . strip_tags($dom->saveHTML($table)) . PHP_EOL;
+		return ($string_out);
+	}
+
 	private function build_idf()
 	{
 		$array_glob = array();
