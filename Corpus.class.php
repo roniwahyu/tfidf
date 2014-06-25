@@ -64,7 +64,7 @@ class Corpus
 	{
 		$this->build_tfidf();
 
-		print_r($this->Doc_list[$this->list_size - 1]->gettfidf());
+		return ($this->Doc_list[$this->list_size - 1]->gettfidf());
 		/*
 		foreach ($this->Doc_list as $key => $Doc_curr)
 		{
@@ -76,4 +76,4 @@ class Corpus
 }
 
 $corpus = new Corpus('ref', "http://gadgets.ndtv.com/apps/news/linkedin-unveils-new-app-for-job-seekers-545481");
-$corpus->gettfidf();
+print_r($corpus->gettfidf());
