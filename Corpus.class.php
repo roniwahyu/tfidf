@@ -4,16 +4,19 @@ include './Document.class.php';
 
 class Corpus
 {
+	protected $query_adress;
 	protected $files_list;
 	protected $Doc_list;
 	protected $list_size;
 	protected $idf;
 
-	public function __construct($reffile)
+	public function __construct($reffile, $query_adress)
 	{
 		$reffile = file_get_contents($reffile);
 		$this->files_list = explode(PHP_EOL, $reffile);
-		
+		$this->files_list[] = $query_adress;
+		$this->query_adress = $query_adress;
+
 		foreach ($this->files_list as $file_addr) {
 			$file_content = $this->extractHTML($file_addr);
 			if ($file_content === FALSE)
@@ -61,13 +64,16 @@ class Corpus
 	{
 		$this->build_tfidf();
 
+		print_r($this->Doc_list[$this->list_size - 1]->gettfidf());
+		/*
 		foreach ($this->Doc_list as $key => $Doc_curr)
 		{
 			print("tfidf tab for ".$this->files_list[$key].PHP_EOL);
 			print_r($Doc_curr->gettfidf());			
 		}
+		*/
 	}
 }
 
-$corpus = new Corpus('ref');
+$corpus = new Corpus('ref', "http://gadgets.ndtv.com/apps/news/linkedin-unveils-new-app-for-job-seekers-545481");
 $corpus->gettfidf();
