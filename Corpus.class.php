@@ -15,7 +15,7 @@ class Corpus
 		$this->files_list = explode(PHP_EOL, $reffile);
 		
 		foreach ($this->files_list as $file_addr) {
-			$file_content = file_get_contents($file_addr);
+			$file_content = $this->extractHTML($file_addr);
 			if ($file_content === FALSE)
 				continue ;
 			$this->Doc_list[] = new Document($file_content);
@@ -32,7 +32,7 @@ class Corpus
 		$dom->preserveWhiteSpace = false;
 		$tables = $dom->getElementsByTagName('p');
 		foreach ($tables as $table)
-			$string_out = $string_out . strip_tags($dom->saveHTML($table)) . PHP_EOL;
+			@$string_out = $string_out . strip_tags($dom->saveHTML($table)) . PHP_EOL;
 		return ($string_out);
 	}
 
