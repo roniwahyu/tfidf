@@ -12,21 +12,29 @@ class CorpusModel
 	protected $Doc_list;
 	protected $list_size;
 	protected $idf;
+	protected $query_error;
 
 	public function __construct($query_adress)
 	{
 		$this->files_list = $this->getref();
 		$this->files_list[] = $query_adress;
 		$this->query_adress = $query_adress;
+		$this->query_error = 0;
 
 		foreach ($this->files_list as $file_addr) {
 			$file_content = $this->extractHTML($file_addr);
-			if ($file_content === FALSE)
+			if ($file_content == FALSE && $file_addr != $query_adress)
 				continue ;
+			else if ($file_content == FALSE && $file_addr === $query_adress)
+			{
+				$this->query_error = 1;
+				continue ;
+			}
 			$this->Doc_list[] = new DocumentModel($file_content);
 		}
 		$this->list_size = count($this->Doc_list);
-		$this->build_idf();
+		if (!$this->query_error)
+			$this->build_idf();
 	}
 
 	private function getref()
@@ -41,12 +49,17 @@ class CorpusModel
 					 'http://en.wikipedia.org/wiki/Astronomy',
 					 'http://en.wikipedia.org/wiki/Fashion',
 					 'http://en.wikipedia.org/wiki/Internet',
+					 'http://en.wikipedia.org/wiki/Electronics',
+					 'http://en.wikipedia.org/wiki/Work',
+					 'http://en.wikipedia.org/wiki/Grammar',
+					 'http://en.wikipedia.org/wiki/Pronoun',
 					 );
 	}
 
 	protected function extractHTML($adress)
 	{
-		$html_raw = file_get_contents($adress);
+		if ((@$html_raw = file_get_contents($adress)) == FALSE)
+			return null;
 		$dom = new \domDocument;
 		@$dom->loadHTML($html_raw);
 		$dom->preserveWhiteSpace = false;
@@ -81,6 +94,11 @@ class CorpusModel
 	{
 		$this->build_tfidf();
 		return ($this->Doc_list[$this->list_size - 1]->gettfidf());
+	}
+
+	public function getQueryState()
+	{
+		return ($this->query_error);
 	}
 }
 /*
